@@ -1,0 +1,207 @@
+import tkinter 
+import webbrowser
+import tkinter.font
+import requests
+import json
+import urllib.parse
+from os import path
+import os
+from tkhtmlview import HTMLLabel
+
+#===execute button============
+def button_function():
+    '''
+    #===thumbnail HTMLpic=========================
+    html_label = HTMLLabel(window, html=f"<img src='https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/a/4/e/c/ef83-ad84-4184-8e77-96dd12ab84e4' width='50' height='50'>")
+    html_label.place(x=20, y=80)
+    html_label2 = HTMLLabel(window, html=f"<a href='https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/b/a/0/9/5889-4aa7-43b4-905a-17fad669f3e9.jpg'><img src='https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/b/a/0/9/5889-4aa7-43b4-905a-17fad669f3e9.jpg' width='50' height='50'></a>")
+    html_label2.place(x=20, y=140)
+    html_label3 = HTMLLabel(window, html=f"<a href='https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/b/a/0/9/5889-4aa7-43b4-905a-17fad669f3e9.jpg'><img src='https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/b/a/0/9/5889-4aa7-43b4-905a-17fad669f3e9.jpg' width='50' height='50'></a>")
+    html_label3.place(x=20, y=200)
+    html_label4 = HTMLLabel(window, html=f"<img src='https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/b/a/0/9/5889-4aa7-43b4-905a-17fad669f3e9.jpg' width='50' height='50'>")
+    html_label4.place(x=20, y=260)
+    html_label5 = HTMLLabel(window, html=f"<img src='https://thumbnailer.mixcloud.com/unsafe/80x80/extaudio/b/a/0/9/5889-4aa7-43b4-905a-17fad669f3e9.jpg' width='50' height='50'>")
+    html_label5.place(x=20, y=320)
+    '''
+    #===API=========================
+    name=urllib.parse.quote(input_box.get())
+    url = "https://api.mixcloud.com/search/?type=cloudcast&q={}".format(name)
+    header= {"content-type": "application/json"}
+    response = requests.get(url, headers=header)
+    jsonData = response.json()
+    
+    #===json parse=========================
+    JSONパース=[]
+    for i in range(0, 10):
+        JSONパース.append(jsonData["data"][i]["play_count"])
+        JSONパース.append(jsonData["data"][i]["user"]["name"])
+        JSONパース.append(jsonData["data"][i]["name"])
+        JSONパース.append(urllib.parse.unquote(jsonData["data"][i]["url"]))
+    
+    #===tkinter window:label=========================
+    url_font=tkinter.font.Font(size=11,underline=True)
+    label_font=tkinter.font.Font(size=11,underline=False)
+    additionalspace="                                                           "
+    #shortURL="https://www.mixcloud.com/.... "
+    shortURL="Open Mixcloud"
+    
+    #1
+    label1_再生回数=tkinter.Label(window, text=str(JSONパース[0])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label1_DJ名=tkinter.Label(window, text=JSONパース[1]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    #label1_DJ名=tkinter.Message(window, text=JSONパース[1]+additionalspace, font=label_font, aspect=400, relief="raised")
+    label1_曲名=tkinter.Label(window, text=JSONパース[2]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label1_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label1_URL.bind("<Button-1>",lambda e:link_click(JSONパース[3]))
+    label1_再生回数.place(x=20, y=90)
+    label1_DJ名.place(x=92, y=90)
+    label1_曲名.place(x=250, y=90)
+    label1_URL.place(x=690, y=90)
+    #2
+    label2_再生回数=tkinter.Label(window, text=str(JSONパース[4])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label2_DJ名=tkinter.Label(window, text=JSONパース[5]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label2_曲名=tkinter.Label(window, text=JSONパース[6]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label2_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label2_URL.bind("<Button-1>",lambda e:link_click(JSONパース[7]))
+    label2_再生回数.place(x=20, y=120)
+    label2_DJ名.place(x=92, y=120)
+    label2_曲名.place(x=250, y=120)
+    label2_URL.place(x=690, y=120)
+    #3
+    label3_再生回数=tkinter.Label(window, text=str(JSONパース[8])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label3_DJ名=tkinter.Label(window, text=JSONパース[9]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label3_曲名=tkinter.Label(window, text=JSONパース[10]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label3_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label3_URL.bind("<Button-1>",lambda e:link_click(JSONパース[11]))
+    label3_再生回数.place(x=20, y=150)
+    label3_DJ名.place(x=92, y=150)
+    label3_曲名.place(x=250, y=150)
+    label3_URL.place(x=690, y=150)
+    #4
+    label4_再生回数=tkinter.Label(window, text=str(JSONパース[12])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label4_DJ名=tkinter.Label(window, text=JSONパース[13]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label4_曲名=tkinter.Label(window, text=JSONパース[14]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label4_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label4_URL.bind("<Button-1>",lambda e:link_click(JSONパース[15]))
+    label4_再生回数.place(x=20, y=180)
+    label4_DJ名.place(x=92, y=180)
+    label4_曲名.place(x=250, y=180)
+    label4_URL.place(x=690, y=180)    
+    #5
+    label5_再生回数=tkinter.Label(window, text=str(JSONパース[16])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label5_DJ名=tkinter.Label(window, text=JSONパース[17]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label5_曲名=tkinter.Label(window, text=JSONパース[18]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label5_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label5_URL.bind("<Button-1>",lambda e:link_click(JSONパース[19]))
+    label5_再生回数.place(x=20, y=210)
+    label5_DJ名.place(x=92, y=210)
+    label5_曲名.place(x=250, y=210)
+    label5_URL.place(x=690, y=210)        
+    #6
+    label6_再生回数=tkinter.Label(window, text=str(JSONパース[20])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label6_DJ名=tkinter.Label(window, text=JSONパース[21]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label6_曲名=tkinter.Label(window, text=JSONパース[22]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label6_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label6_URL.bind("<Button-1>",lambda e:link_click(JSONパース[23]))
+    label6_再生回数.place(x=20, y=240)
+    label6_DJ名.place(x=92, y=240)
+    label6_曲名.place(x=250, y=240)
+    label6_URL.place(x=690, y=240)   
+    #7
+    label7_再生回数=tkinter.Label(window, text=str(JSONパース[24])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label7_DJ名=tkinter.Label(window, text=JSONパース[25]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label7_曲名=tkinter.Label(window, text=JSONパース[26]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label7_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label7_URL.bind("<Button-1>",lambda e:link_click(JSONパース[27]))
+    label7_再生回数.place(x=20, y=270)
+    label7_DJ名.place(x=92, y=270)
+    label7_曲名.place(x=250, y=270)
+    label7_URL.place(x=690, y=270)   
+    #8
+    label8_再生回数=tkinter.Label(window, text=str(JSONパース[28])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label8_DJ名=tkinter.Label(window, text=JSONパース[29]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label8_曲名=tkinter.Label(window, text=JSONパース[30]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label8_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label8_URL.bind("<Button-1>",lambda e:link_click(JSONパース[31]))
+    label8_再生回数.place(x=20, y=300)
+    label8_DJ名.place(x=92, y=300)
+    label8_曲名.place(x=250, y=300)
+    label8_URL.place(x=690, y=300)   
+    #9
+    label9_再生回数=tkinter.Label(window, text=str(JSONパース[32])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label9_DJ名=tkinter.Label(window, text=JSONパース[33]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label9_曲名=tkinter.Label(window, text=JSONパース[34]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label9_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label9_URL.bind("<Button-1>",lambda e:link_click(JSONパース[35]))
+    label9_再生回数.place(x=20, y=330)
+    label9_DJ名.place(x=92, y=330)
+    label9_曲名.place(x=250, y=330)
+    label9_URL.place(x=690, y=330)   
+    #10
+    label10_再生回数=tkinter.Label(window, text=str(JSONパース[36])+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=7, anchor=tkinter.W)
+    label10_DJ名=tkinter.Label(window, text=JSONパース[37]+additionalspace, font=label_font, width=17, anchor=tkinter.W)
+    label10_曲名=tkinter.Label(window, text=JSONパース[38]+additionalspace, font=label_font, foreground='linen', background='lightslategray', width=53, anchor=tkinter.W)
+    label10_URL=tkinter.Label(window, text=shortURL, font=url_font)
+    label10_URL.bind("<Button-1>",lambda e:link_click(JSONパース[39]))
+    label10_再生回数.place(x=20, y=360)
+    label10_DJ名.place(x=92, y=360)
+    label10_曲名.place(x=250, y=360)
+    label10_URL.place(x=690, y=360)   
+
+
+def link_click(url):
+    webbrowser.open_new(url)
+
+
+#===tkinter window=========================
+filetitle = os.path.basename(__file__)
+maintitle = filetitle.replace('.py', '')
+
+window=tkinter.Tk()
+#window.title("MixCloud MusicAPI")
+window.title(maintitle)
+window.geometry("800x400+250+150")
+window.resizable(0,0)
+#window.attributes("-topmost",True)
+
+
+#===tkinter window:label=========================
+label=tkinter.Label(window, text="今日の気分は？", font=("MSゴシック", "15"))
+label.place(x=20, y=20)
+
+#===tkinter window:inputbox=========================
+input_box=tkinter.Entry(window, width=25, font=("MSゴシック",16))
+#input_box.insert(tkinter.END, u'今日の気分は？')
+input_box.place(x=180, y=20)
+
+#===tkinter window:button=========================
+'''
+dirpath = os.path.dirname(__file__)
+imgpath = dirpath + "/button1.png"
+
+bgbutton=tkinter.PhotoImage(file=imgpath)
+
+small_img = bgbutton.subsample(3, 3)
+button=tkinter.Button(window, image=small_img, \
+                    command=lambda:[button_function()])
+'''                    
+button=tkinter.Button(window, text="MixCloud", font=("", 13), 
+                    bg='#7b68ee', fg='linen', width=10, 
+                    command=lambda:[button_function()])
+button.place(x=480, y=17)
+
+#===tkinter window:label=========================
+labeltitle_font=tkinter.font.Font(size=10,underline=False,weight="bold")
+
+label_再生回数=tkinter.Label(window, text="再生回数", font=labeltitle_font)
+label_DJ名=tkinter.Label(window, text="DJ name", font=labeltitle_font)
+label_曲名=tkinter.Label(window, text="Mix name", font=labeltitle_font)
+label_URL=tkinter.Label(window, text="URL", font=labeltitle_font)
+
+label_再生回数.place(x=20, y=68)
+label_DJ名.place(x=92, y=68)
+label_曲名.place(x=250, y=68)
+label_URL.place(x=690, y=68)
+
+#============================
+window.mainloop()
+
